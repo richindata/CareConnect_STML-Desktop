@@ -1,2 +1,2 @@
-# CareConnect_RN
-CareConnect app with React Native application framework
+# CareConnect_STML-Desktop
+CareConnect STML Desktop Application framework
