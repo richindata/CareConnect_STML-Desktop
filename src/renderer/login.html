@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self'; script-src 'self'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In &middot; Care Connect</title>
+    <link rel="stylesheet" href="login.css" />
+  </head>
+  <body class="login-body">
+    <main class="login">
+      <a class="login__home" href="index.html">&larr; Back</a>
+
+      <h1 class="login__brand">Care Connect</h1>
+
+      <section class="signin" aria-labelledby="signin-title">
+        <header class="signin__header">
+          <h2 id="signin-title">Patient Sign In</h2>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs" role="tablist" aria-label="Sign in method">
+          <button
+            class="tab is-active"
+            id="tab-pin"
+            role="tab"
+            aria-selected="true"
+            aria-controls="panel-pin"
+            data-target="pin"
+          >
+            PIN
+          </button>
+          <button
+            class="tab"
+            id="tab-password"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-password"
+            data-target="password"
+          >
+            Password
+          </button>
+        </div>
+
+        <!-- ===================== PIN PANEL ===================== -->
+        <div
+          class="panel is-active"
+          id="panel-pin"
+          role="tabpanel"
+          aria-labelledby="tab-pin"
+        >
+          <p class="pin__label">Enter your 4-digit PIN</p>
+
+          <div class="pin__dots" id="pin-dots" aria-hidden="true">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+
+          <p class="pin__status" id="pin-status" role="status" aria-live="polite"></p>
+
+          <div class="keypad">
+            <button class="key" data-digit="1">1</button>
+            <button class="key" data-digit="2">2</button>
+            <button class="key" data-digit="3">3</button>
+            <button class="key" data-digit="4">4</button>
+            <button class="key" data-digit="5">5</button>
+            <button class="key" data-digit="6">6</button>
+            <button class="key" data-digit="7">7</button>
+            <button class="key" data-digit="8">8</button>
+            <button class="key" data-digit="9">9</button>
+            <span class="key key--spacer" aria-hidden="true"></span>
+            <button class="key" data-digit="0">0</button>
+            <button class="key key--del" id="pin-del" aria-label="Delete last digit">
+              &#9003;
+            </button>
+          </div>
+
+          <p class="pin__demo">Demo PIN: 1-2-3-4</p>
+        </div>
+
+        <!-- =================== PASSWORD PANEL =================== -->
+        <div
+          class="panel"
+          id="panel-password"
+          role="tabpanel"
+          aria-labelledby="tab-password"
+          hidden
+        >
+          <div class="alert" id="login-alert" role="alert" hidden>
+            <span class="alert__icon" aria-hidden="true">&#9888;</span>
+            <span class="alert__text" id="login-alert-text">Incorrect email or password.</span>
+          </div>
+
+          <form id="password-form" novalidate>
+            <label class="field">
+              <span class="field__label">Email address <span class="req">*</span></span>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="field__input"
+                value="margaret@memory.care"
+                autocomplete="username"
+                required
+              />
+            </label>
+
+            <label class="field">
+              <span class="field__label">Password <span class="req">*</span></span>
+              <span class="field__wrap">
+                <span class="field__icon" aria-hidden="true">&#128274;</span>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="field__input field__input--icon"
+                  value="caregiver"
+                  autocomplete="current-password"
+                  required
+                />
+                <button type="button" class="field__toggle" id="toggle-password" aria-pressed="false">
+                  <span aria-hidden="true">&#128065;</span> <span id="toggle-label">Show</span>
+                </button>
+              </span>
+            </label>
+
+            <button type="submit" class="btn-signin">
+              Sign in <span class="enter-key">Enter</span>
+            </button>
+          </form>
+
+          <p class="trouble">
+            Trouble signing in? <a href="#">Contact your caregiver</a>
+          </p>
+
+          <p class="signup-cta">
+            Don't have an account?
+            <a class="link-btn" href="register.html">Create Account</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script src="login.js"></script>
+  </body>
+</html>
