@@ -1,4 +1,4 @@
-:root {
+.login-body {
   --navy: #1e3a5f;
   --navy-dark: #15293f;
   --ink: #0f172a;
@@ -10,22 +10,13 @@
   --err-line: #f5b5b5;
   --err-ink: #b42318;
   --link: #1d4ed8;
-}
 
-* {
-  box-sizing: border-box;
-}
-
-.login-body {
-  margin: 0;
   min-height: 100vh;
   background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: var(--ink);
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  -webkit-font-smoothing: antialiased;
 }
 
 .login {
@@ -42,6 +33,10 @@
   font-size: 0.85rem;
   color: var(--muted);
   text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .login__home:hover {
@@ -111,10 +106,6 @@
 /* =========================== PANELS =========================== */
 .panel {
   padding: 1.5rem;
-}
-
-.panel[hidden] {
-  display: none;
 }
 
 /* ----------------------------- PIN ----------------------------- */
@@ -219,10 +210,6 @@
   padding: 0.65rem 0.8rem;
   font-size: 0.85rem;
   margin-bottom: 1.1rem;
-}
-
-.alert[hidden] {
-  display: none;
 }
 
 .field {
@@ -357,6 +344,7 @@
   font-weight: 700;
   font-size: 0.85rem;
   text-decoration: none;
+  cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
@@ -378,10 +366,6 @@
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 1.1rem;
-}
-
-.success[hidden] {
-  display: none;
 }
 
 .role-field {
