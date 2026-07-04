@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { NAV_ITEMS, DIGIT_TO_ROUTE, EMERGENCY_CONTACT } from '../../lib/nav.js';
 import { getCurrentUser, clearSession } from '../../lib/auth.js';
+import { emitNew } from '../../lib/appEvents.js';
+import { loadSettings, saveSettings, applySettings, FONT_MIN, FONT_MAX } from '../../lib/settings.js';
 import MenuBar from './MenuBar.jsx';
 import ShortcutsModal from './ShortcutsModal.jsx';
 
@@ -13,6 +15,7 @@ function shortName(fullName) {
 export default function AppShell() {
   const navigate = useNavigate();
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [emergencyLit, setEmergencyLit] = useState(false);
   const user = getCurrentUser();
   const userLabel = shortName(user?.name);
 
@@ -21,21 +24,79 @@ export default function AppShell() {
     navigate('/login');
   }, [navigate]);
 
-  // Keyboard shortcuts: Ctrl/Cmd + 1..6 navigate; Ctrl/Cmd + / toggles help.
+  // Draw attention to the emergency contact (F9).
+  const flashEmergency = useCallback(() => {
+    setEmergencyLit(true);
+    setTimeout(() => setEmergencyLit(false), 1600);
+  }, []);
+
+  // Accessibility quick-adjusts — nudge the base font size / toggle contrast and
+  // persist, so they take effect everywhere (same store as the Settings page).
+  const adjustFont = useCallback((delta) => {
+    const s = loadSettings();
+    const fontSize = Math.min(FONT_MAX, Math.max(FONT_MIN, s.fontSize + delta));
+    const next = { ...s, fontSize };
+    saveSettings(next);
+    applySettings(next);
+  }, []);
+
+  const toggleContrast = useCallback(() => {
+    const s = loadSettings();
+    const next = { ...s, highContrast: !s.highContrast };
+    saveSettings(next);
+    applySettings(next);
+  }, []);
+
+  const printPlan = useCallback(() => window.print(), []);
+
+  // Keyboard shortcuts. Global: Ctrl/Cmd+1..6 navigate; Ctrl/Cmd+/ and F1 toggle
+  // help; F9 highlights emergency; Ctrl/Cmd+P print; Ctrl/Cmd +/- text size;
+  // Ctrl+Q sign out; Ctrl+H high contrast (Ctrl-only so macOS Cmd+Q/Cmd+H keep
+  // their native quit/hide roles).
   useEffect(() => {
     const onKey = (e) => {
-      if (!(e.ctrlKey || e.metaKey)) return;
-      if (e.key === '/') {
+      if (e.key === 'F1') {
         e.preventDefault();
         setShowShortcuts((s) => !s);
-      } else if (DIGIT_TO_ROUTE[e.key]) {
+        return;
+      }
+      if (e.key === 'F9') {
         e.preventDefault();
-        navigate(DIGIT_TO_ROUTE[e.key]);
+        flashEmergency();
+        return;
+      }
+      if (e.ctrlKey && !e.metaKey && (e.key === 'q' || e.key === 'Q')) {
+        e.preventDefault();
+        signOut();
+        return;
+      }
+      if (e.ctrlKey && !e.metaKey && (e.key === 'h' || e.key === 'H')) {
+        e.preventDefault();
+        toggleContrast();
+        return;
+      }
+      if (!(e.ctrlKey || e.metaKey)) return;
+      const k = e.key;
+      if (k === '/') {
+        e.preventDefault();
+        setShowShortcuts((s) => !s);
+      } else if (k === 'p' || k === 'P') {
+        e.preventDefault();
+        printPlan();
+      } else if (k === '=' || k === '+') {
+        e.preventDefault();
+        adjustFont(1);
+      } else if (k === '-' || k === '_') {
+        e.preventDefault();
+        adjustFont(-1);
+      } else if (DIGIT_TO_ROUTE[k]) {
+        e.preventDefault();
+        navigate(DIGIT_TO_ROUTE[k]);
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [navigate]);
+  }, [navigate, flashEmergency, signOut, toggleContrast, printPlan, adjustFont]);
 
   // Escape closes the shortcuts modal.
   useEffect(() => {
@@ -45,14 +106,21 @@ export default function AppShell() {
     return () => document.removeEventListener('keydown', onEsc);
   }, [showShortcuts]);
 
-  // Native-menu actions (Tools → Keyboard Shortcuts).
+  // Native-menu actions. "New" is fanned out to the active page via the app
+  // event bus so each screen decides what New means (task, medication, …).
   useEffect(() => {
     if (!window.careconnect?.onMenuAction) return;
     return window.careconnect.onMenuAction((action) => {
       if (action === 'shortcuts') setShowShortcuts(true);
       if (action === 'signout') signOut();
+      if (action === 'new') emitNew();
+      if (action === 'emergency') flashEmergency();
+      if (action === 'print') printPlan();
+      if (action === 'bigger-text') adjustFont(1);
+      if (action === 'smaller-text') adjustFont(-1);
+      if (action === 'high-contrast') toggleContrast();
     });
-  }, [signOut]);
+  }, [signOut, flashEmergency, printPlan, adjustFont, toggleContrast]);
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'short',
@@ -105,7 +173,7 @@ export default function AppShell() {
             ))}
           </nav>
 
-          <div className="emergency">
+          <div className={`emergency ${emergencyLit ? 'is-lit' : ''}`}>
             <p className="emergency__title">📞 Emergency</p>
             <p className="emergency__name">{EMERGENCY_CONTACT.name}</p>
             <p className="emergency__phone">{EMERGENCY_CONTACT.phone}</p>

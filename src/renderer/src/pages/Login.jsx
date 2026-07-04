@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { signInWithPin, signInWithPassword } from '../lib/auth.js';
+import { loadSettings } from '../lib/settings.js';
 
 const PIN_LENGTH = 4;
 
@@ -110,7 +111,7 @@ function PinPanel({ navigate }) {
         {status.text}
       </p>
 
-      <div className="keypad">
+      <div className={`keypad ${loadSettings().largePinPad ? 'keypad--large' : ''}`}>
         {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((d) => (
           <button key={d} className="key" onClick={() => add(d)}>{d}</button>
         ))}

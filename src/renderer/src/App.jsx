@@ -1,15 +1,25 @@
 import { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { loadSettings, applySettings } from './lib/settings.js';
 import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import AppShell from './pages/app/AppShell.jsx';
 import Home from './pages/app/Home.jsx';
-import Placeholder from './pages/app/Placeholder.jsx';
+import DailyPlan from './pages/app/DailyPlan.jsx';
+import Medications from './pages/app/Medications.jsx';
+import Reminders from './pages/app/Reminders.jsx';
+import Journal from './pages/app/Journal.jsx';
+import Settings from './pages/app/Settings.jsx';
 
 export default function App() {
   const navigate = useNavigate();
+
+  // Apply saved display preferences (font size, high contrast) app-wide on load.
+  useEffect(() => {
+    applySettings(loadSettings());
+  }, []);
 
   // Bridge native-menu navigation into React Router.
   useEffect(() => {
@@ -27,26 +37,11 @@ export default function App() {
 
       <Route path="/app" element={<AppShell />}>
         <Route index element={<Home />} />
-        <Route
-          path="daily-plan"
-          element={<Placeholder icon="📅" title="Daily Plan" description="Your full schedule of tasks for morning, afternoon and evening." />}
-        />
-        <Route
-          path="medications"
-          element={<Placeholder icon="💊" title="Medications" description="Track every medication with taken / pending status and refill alerts." />}
-        />
-        <Route
-          path="reminders"
-          element={<Placeholder icon="🔔" title="Reminders" description="Gentle, plain-language alerts delivered throughout your day." />}
-        />
-        <Route
-          path="journal"
-          element={<Placeholder icon="📖" title="Journal" description="A shared log with mood check-ins, notes and history." />}
-        />
-        <Route
-          path="settings"
-          element={<Placeholder icon="⚙️" title="Settings" description="Preferences, accessibility options and caregiver access." />}
-        />
+        <Route path="daily-plan" element={<DailyPlan />} />
+        <Route path="medications" element={<Medications />} />
+        <Route path="reminders" element={<Reminders />} />
+        <Route path="journal" element={<Journal />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   );

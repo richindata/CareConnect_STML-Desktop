@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { emitNew } from '../../lib/appEvents.js';
 
 // In-app menu bar that visually matches the mockup (File / View / Tools / Help).
 // The native Electron application menu mirrors these actions; this bar gives the
@@ -22,7 +23,8 @@ export default function MenuBar({ userLabel, onSignOut, onShowShortcuts }) {
 
   const MENUS = {
     File: [
-      { label: 'New Journal Entry', onClick: go('/app/journal') },
+      { label: 'New…', hint: 'Ctrl+N', onClick: emitNew },
+      { label: 'New Journal Entry', hint: 'Ctrl+J', onClick: go('/app/journal') },
       { separator: true },
       { label: 'Sign Out', onClick: onSignOut },
     ],

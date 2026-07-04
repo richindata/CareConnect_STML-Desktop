@@ -13,6 +13,8 @@ const DEFAULT_TASKS = [
   { id: 't2', label: 'Video call with Dr. Chen', time: '09:30', type: 'Appointment', done: true },
   { id: 't3', label: 'Lunch with Linda', time: '12:00', type: 'Social', done: false },
   { id: 't4', label: 'Walk in the garden', time: '14:00', type: 'Activity', done: false },
+  { id: 't5', label: 'Take evening medications', time: '18:00', type: 'Medication', done: false },
+  { id: 't6', label: 'Call grandson Oliver', time: '20:00', type: 'Social', done: false },
 ];
 
 function makeId() {

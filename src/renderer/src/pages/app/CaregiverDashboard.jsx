@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser } from '../../lib/auth.js';
 import { loadTasks, saveTasks, makeTask } from '../../lib/tasks.js';
+import { onNew } from '../../lib/appEvents.js';
 import AddTaskModal from './AddTaskModal.jsx';
 
 const MRN = 'MRN-00421';
@@ -40,10 +41,10 @@ export default function CaregiverDashboard() {
 
   const callPatient = () => window.alert('Calling patient…');
 
-  // Page-specific shortcut: Ctrl/Cmd+T adds a task.
+  // Page-specific shortcut: Ctrl/Cmd+N adds a task.
   useEffect(() => {
     const onKey = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 't') {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n') {
         e.preventDefault();
         addTask();
       }
@@ -52,13 +53,8 @@ export default function CaregiverDashboard() {
     return () => document.removeEventListener('keydown', onKey);
   }, [addTask]);
 
-  // Native menu → File → Add Task.
-  useEffect(() => {
-    if (!window.careconnect?.onMenuAction) return;
-    return window.careconnect.onMenuAction((action) => {
-      if (action === 'add-task') addTask();
-    });
-  }, [addTask]);
+  // Native menu / in-window menu bar → "New".
+  useEffect(() => onNew(addTask), [addTask]);
 
   const remaining = tasks.filter((t) => !t.done).length;
 

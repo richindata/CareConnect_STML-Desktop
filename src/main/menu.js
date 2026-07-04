@@ -58,10 +58,12 @@ export function buildAppMenu(win) {
     {
       label: 'File',
       submenu: [
-        { label: 'Add Task', accelerator: 'CmdOrCtrl+T', registerAccelerator: false, click: () => action('add-task') },
+        { label: 'New…', accelerator: 'CmdOrCtrl+N', registerAccelerator: false, click: () => action('new') },
         { label: 'New Journal Entry', accelerator: 'CmdOrCtrl+J', registerAccelerator: false, click: () => navigate('/app/journal') },
         { type: 'separator' },
-        { label: 'Sign Out', click: () => action('signout') },
+        { label: 'Print Daily Plan', accelerator: 'CmdOrCtrl+P', registerAccelerator: false, click: () => action('print') },
+        { type: 'separator' },
+        { label: 'Sign Out', accelerator: 'Ctrl+Q', registerAccelerator: false, click: () => action('signout') },
         { type: 'separator' },
         isMac ? { role: 'close' } : { role: 'quit' },
       ],
@@ -110,6 +112,12 @@ export function buildAppMenu(win) {
       submenu: [
         { label: 'Keyboard Shortcuts', accelerator: 'CmdOrCtrl+/', registerAccelerator: false, click: () => action('shortcuts') },
         { label: 'Settings', accelerator: 'CmdOrCtrl+6', registerAccelerator: false, click: () => navigate('/app/settings') },
+        { type: 'separator' },
+        { label: 'Bigger Text', accelerator: 'CmdOrCtrl+=', registerAccelerator: false, click: () => action('bigger-text') },
+        { label: 'Smaller Text', accelerator: 'CmdOrCtrl+-', registerAccelerator: false, click: () => action('smaller-text') },
+        { label: 'High Contrast', accelerator: 'Ctrl+H', registerAccelerator: false, click: () => action('high-contrast') },
+        { type: 'separator' },
+        { label: 'Emergency Contact', accelerator: 'F9', registerAccelerator: false, click: () => action('emergency') },
       ],
     },
 
@@ -127,7 +135,7 @@ export function buildAppMenu(win) {
     {
       role: 'help',
       submenu: [
-        { label: 'Keyboard Shortcuts', click: () => action('shortcuts') },
+        { label: 'Keyboard Shortcuts', accelerator: 'F1', registerAccelerator: false, click: () => action('shortcuts') },
         { label: 'Learn More', click: () => shell.openExternal('https://www.electronjs.org') },
         ...(isMac ? [] : [{ type: 'separator' }, { label: 'About CareConnect STML', click: showAbout }]),
       ],
